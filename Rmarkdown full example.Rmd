@@ -2,7 +2,7 @@
 title: "Biostat Method Rec 1"
 author: "HS"
 date: "9/10/2019"
-output: word_document
+output: github_document
 ---
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
