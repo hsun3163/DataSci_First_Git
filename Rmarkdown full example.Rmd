@@ -1,152 +1,174 @@
 ---
-title: "RMD for git"
+title: "Biostat Method Rec 1"
 author: "HS"
-date: "9/12/2019"
-output: html_document
+date: "9/10/2019"
+output: word_document
 ---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
 
-I'm an R Markdown document! 
-
-# Section 1
-
-Here's a **code chunk** that samples from 
-a _normal distribution_:
 
 ```{r}
-samp = rnorm(100)
-length(samp)
-```
-
-# Section 2
-
-I can take the mean of the sample, too!
-The mean is `r mean(samp)`.
-
-The chunk below creates a dataframe containing a sample of size 500 from a 
-random normal variable and the absolute value of each element of that sample, 
-and produces a histogram of the absolute value.
-
-```{r learning_assessment_1}
 library(tidyverse)
+library(arsenal)
+library(dplyr)
+library(goeveg)
+library(readxl)
+#Define get mode function 
+getmode <- function(v) {
+   uniqv <- unique(v)
+   uniqv[which.max(tabulate(match(v, uniqv)))]
+}
 
-la_df = tibble(
-  norm_samp = rnorm(500),
-  norm_samp_pos = norm_samp > 0,
-  abs_norm_samp = abs(norm_samp)
-)
+# Create the vector with numbers.
+#v <- c(2,1,2,3,1,2,3,4,1,5,5,3,2,3)
 
-ggplot(la_df, aes(x = abs_norm_samp)) + geom_histogram()
+# Calculate the mode using the user function.
+#result <- getmode(v)
+#print(result)
 
-median_samp = median(pull(la_df, norm_samp))
+# Create the vector with characters.
+#charv <- c("o","it","the","it","it")
+
+# Calculate the mode using the user function.
+#result <- getmode(charv)
+#print(result)
+
+
+```
+## Problem 1
+
+
+## Problem 2
+Twenty-five randomly selected appendectomies lasted for the following lengths of time. Construct a histogram from the following data:
+113 118
+138 139 157 157
+121 123 126 128 130 135 136 137 140 140 142 142 142 142 143 155 158 159 164
+
+```{r problem 2}
+timelength_appendectomies = c(113,118,
+138, 139, 157, 157,121, 123, 126, 128, 130, 135, 136, 137, 140, 140, 142, 142, 142, 142, 143, 155, 158, 159, 164)
+
+#Use break to set cat width
+hist(timelength_appendectomies , 
+     main = "Problem 2 Histogram",
+     breaks = 5,
+     xlab = "time length appendectomies",
+     ylab = "Abundance", 
+     col = "blue")
+
 ```
 
-The median of the variable containing absolute values is 
-`r round(median_samp, digits = 2)`.
+## Problem 3
 
-Text formatting 
-------------------------------------------------------------
+Heart rates for ten asthmatic patients in a state of respiratory arrest are given below. Find the mean, median, and mode.
 
-*italic*  or  _italic_
-**bold**  or  __bold__
-`code`
-superscript^2^ and subscript~2~
+165 145 115 110 150 145 38 140 122 155
 
+  a. What are the mean, median, and mode?
 
-Headings
-------------------------------------------------------------
+```{r cars problem 3a, echo=FALSE}
+Heart_rates_asthmatic_patients = c(165,145,115,110,150,145,38,140,122,155)
+mode(Heart_rates_asthmatic_patients)
+fns_Heart_rates_asthmatic_patients <- fivenum(x=Heart_rates_asthmatic_patients)
+```
+The mean is `r mean(Heart_rates_asthmatic_patients) `
 
-# 1st Level Header
+The mode is `r getmode(Heart_rates_asthmatic_patients) `
 
-## 2nd Level Header
+The median is `r median(Heart_rates_asthmatic_patients) `
 
-### 3rd Level Header
-
-
-Lists
-------------------------------------------------------------
-
-*   Bulleted list item 1
-
-*   Item 2
-
-    * Item 2a
-
-    * Item 2b
-
-1.  Numbered list item 1
-
-1.  Item 2. The numbers are incremented automatically in the output.
-
-
-Tables 
-------------------------------------------------------------
-
-First Header  | Second Header
-------------- | -------------
-Content Cell  | Content Cell
-Content Cell  | Content Cell
-
-* The mean of the sample is `r mean(pulld(ls_df, norm_samp))`
-* The median of the sample is `r median(pull(ls_df, norm_samp))`
-* The median of the sample is `r median(pull(ls_df, norm_samp))`
-
-###Scalttor plot
-
-```{r setup, include = FALSE}
-library(tidyverse)
+  b. What is the five-number summary? Make a box-plot using this data. 
+The five-number summary is `r fns_Heart_rates_asthmatic_patients `
+```{r Boxplot of 3c}
+boxplot(Heart_rates_asthmatic_patients, 
+        xlab = "Heart_rates_asthmatic_patients", 
+        main = "boxplot for problem 3"  )
 ```
 
-The purpose of this file is to examine a few data types (or data classes) in R.
+  c. What is the Range:
+The range is`r range(Heart_rates_asthmatic_patients)`
 
-First we create a dataframe containing variables of four different types.
+  d.What is the variance? Standard deviation? IQR? 
+The variance is `r var(Heart_rates_asthmatic_patients)`
+The SD is `r sd(Heart_rates_asthmatic_patients)`
+The IQR is  `r IQR(Heart_rates_asthmatic_patients)`
+
+  e.What is the coefficient of variation? 
+The coefficient of is `r cv(Heart_rates_asthmatic_patients)`
+
+
+
+## Problem 4
+ a.For each variable (other than ID), obtain appropriate descriptive statistics (both numeric and graphic). 
+##First do the continiouse variable, make a table for these
+##Then do the 
+```{r}
+FEV_DAT <- read_excel("/Users/haosun/Desktop/Columbia\ class/P8130\ -\ BIOSTATISTICAL\ METHODS\ I/Recitation/Rec1/FEV.DAT.xls")
+
+print("the mean is")
+sapply(select(FEV_DAT,2:4), function(x) mean(as.numeric(x))) 
+
+print("the mode is")
+sapply(select(FEV_DAT,2:4), function(x) getmode(as.numeric(x))) 
+
+print("the five number stat is")
+sapply(select(FEV_DAT,2:4), function(x) fivenum(as.numeric(x))) 
+
+
+print("the variance is")
+sapply(select(FEV_DAT,2:4), function(x) var(as.numeric(x))) 
+
+print("the sd is")
+sapply(select(FEV_DAT,2:4), function(x) sd(as.numeric(x))) 
+
+
+print("the iqr is")
+sapply(select(FEV_DAT,2:4), function(x) IQR(as.numeric(x))) 
+
+print("the coef of var is")
+sapply(select(FEV_DAT,2:4), function(x) cv(as.numeric(x))) 
+boxplot(select(FEV_DAT,2:4), 
+        data=FEV_DAT, 
+        xlab = colnames(select(FEV_DAT,2:6)), 
+        main = "Boxplot for Q4a" )
+```
+ 
+ 2.24 Use both numeric and graphic measures to assess the relationship of FEB to age, height, and smoking status. (Do this separately for boys and girls.) 
+
+(Use Scaltter plot to illustrate the relationship btw continious variable)
+
+
+Relationship to Smoking
 
 ```{r}
-example_df = tibble(
-  vec_numeric = 5:8,
-  vec_char = c("My", "name", "is", "Jeff"),
-  vec_logical = c(TRUE, TRUE, TRUE, FALSE),
-  vec_factor = factor(c("male", "male", "female", "female"))
-)
+boxplot(FEV~Smoke, FEV_DAT, col=c("blue","red"))
 ```
 
-The variable `vec_numeric` has class `r class(pull(example_df, vec_numeric))`, and the variable `vec_factor` has class `r class(pull(example_df, vec_factor))`.
-And here’s one for basic plots:
+Relationship to age
 
----
-title: "Basic Plots"
-author: "Jeff Goldsmith"
-date: 2019-09-10
-output: html_document
----
 
-```{r , include = FALSE}
-library(tidyverse)
+
+
+2.25:
+Creat regressio line for the FEV and Age for boy and girls
+
+b
+
+
+```{r}
+?read_excel()
+rm(list=ls())
+
 ```
 
-The purpose of this file is to present a couple of basic plots using `ggplot`.
 
-First we create a dataframe containing variables for our plots.
 
-```{r df_create}
-set.seed(1234)
 
-plot_df = tibble(
-  x = rnorm(1000, sd = .5),
-  y = 1 + 2 * x + rnorm(1000)
-)
-```
 
-First we show a histogram of the `x` variable.
 
-```{r x_hist}
-ggplot(plot_df, aes(x = x)) + geom_histogram()
-```
 
-Next we show a scatterplot of `y` vs `x`. 
 
-```{r yx_scatter}
-ggplot(plot_df, aes(x = x, y = y)) + geom_point()
-```
 
-This is the change the shall be add on the example rmd
 
